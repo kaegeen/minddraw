@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MindDraw</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .node {
+      cursor: move;
+      user-select: none;
+      transition: transform 0.1s ease;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-white min-h-screen p-6">
+  <h1 class="text-3xl font-bold mb-4 text-center">MindDraw – Visual Brainstorming</h1>
+
+  <div id="canvas" class="relative w-full h-[80vh] border-2 border-slate-700 rounded overflow-hidden bg-slate-800"></div>
+
+  <div class="mt-4 flex justify-center">
+    <button id="addNode" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded">+ Add Idea</button>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('canvas');
+    const addNodeBtn = document.getElementById('addNode');
+
+    function createNode(x = 50, y = 50, text = 'New Idea') {
+      const node = document.createElement('div');
+      node.className = 'absolute px-4 py-2 bg-teal-600 rounded-full node text-sm font-medium';
+      node.contentEditable = true;
+      node.style.left = x + 'px';
+      node.style.top = y + 'px';
+      node.innerText = text;
+
+      let offsetX, offsetY, isDragging = false;
+
+      node.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        offsetX = e.offsetX;
+        offsetY = e.offsetY;
+        node.style.zIndex = 1000;
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        node.style.left = (e.clientX - offsetX) + 'px';
+        node.style.top = (e.clientY - offsetY - canvas.getBoundingClientRect().top) + 'px';
+      });
+
+      window.addEventListener('mouseup', () => {
+        isDragging = false;
+        node.style.zIndex = '';
+      });
+
+      canvas.appendChild(node);
+    }
+
+    addNodeBtn.addEventListener('click', () => {
+      createNode(Math.random() * 400, Math.random() * 300);
+    });
+  </script>
+</body>
+</html>
